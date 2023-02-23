@@ -22,7 +22,7 @@ import static org.apache.rocketmq.client.producer.SendStatus.SEND_OK;
 
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringRunner.class)
-class RocketMQTest {
+class RocketMqTest {
 
     @Autowired
     private RocketMQTemplate template;
@@ -34,6 +34,7 @@ class RocketMQTest {
             SendResult sendResult = template.syncSend("fengyunweiTopic",String.valueOf(i));
             System.out.printf(sendResult.getSendStatus().equals(SEND_OK)?"成功:"+i:"失败:"+i);
         }*/
+        //保证消息顺序性
         for (int i = 0; i <100 ; i++) {
             MessageQueueSelector queueSelector = new MessageQueueSelector() {
                 @Override
