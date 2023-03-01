@@ -4,5 +4,12 @@
 3:消费者消费消息顺序消费
 
 开启服务，  首先启动nameserver 然后启动broker
-11
-12
+
+
+
+
+接口是抽象类 抽象类不可已实例化 如果在接口层加上@Service 而@Service 中包含了@Component注解,
+也就意味着@Service注解的作用就是将Spring中的Bean实例化，相互矛盾。（加上也不会报错）
+因此将@Service加在接口实现类上
+
+.gitigone 忽略提交git的文件
