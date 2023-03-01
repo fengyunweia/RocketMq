@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RocketMQMessageListener(consumerGroup = "fengyunwei",topic = "fengyunweiTopic",consumeMode = ConsumeMode.ORDERLY)
-public class fengyunweiTopicListener implements RocketMQListener<String> {
+public class TopicListener implements RocketMQListener<String> {
 
     @Override
     public void onMessage(String s) {
