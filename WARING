@@ -20,3 +20,8 @@
 //接口的意义
 接口就是固定一些功能，实现者必须实现这些功能并被约束
 https://blog.csdn.net/whandwho/article/details/80247521?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-80247521-blog-100730804.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-80247521-blog-100730804.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=1
+
+
+//事务问题
+读未提交 读已提交 可重复度  串行读（不会幻读）
+可重复读造成的幻读和其他两个造成幻读的情景不一样 （可重复读会导致两次查询结果一致，导致B事务提交的结果查不到）
