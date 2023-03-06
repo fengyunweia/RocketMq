@@ -88,7 +88,6 @@ class RocketMqTest {
          * 缩容：加入一个topic 上有128个队列 但是后来发现并不需要怎末多写队列，现在要缩容成64 则只需要先缩容写队列到64 等读队列把65-128队列的信息
          * 消费完，在将都队列设置生64  完美100%保存数据
          * 扩容：加入64 要换成128 则先将写队列设置成128 新增读写队列为128即可
-         * 
          *
          * */
 
@@ -110,6 +109,53 @@ class RocketMqTest {
          * （可以）如果开启自动创建 （nameServer每隔30S监测broker并拉取路由信息阶段）
          * 此时生产者还一直发送此topic 的信息，则由于负载均衡会有很多个broker有topic的路由信息，达到负载均衡的作用 这种情况可以
          *
+         */
+
+        /**
+         *  索引（consumerQueue 和indexFile）
+         * 生产者生产的消息保存在commintlog 中 有一个后端的 ReputMessageService 服务 (dispatch 线程) 会异步的构建多种索引，
+         * 满足不同形式的读取诉求。索引信息保存在consumerQueue中记录（或者index file中）
+         * 消费者消费先获取consumerQueue 得到其中的信息，减小开销，就能获取消费者需要的消息信息（或者messageId）
+         *
+         *
+         * indexFile
+         * 每个Broker包含一组indexFile，每个indexFile都是以该indexFile被创建时的时间戳进行命名的。
+         *
+         * 每个indexFile由三部分组成：indexHeader（索引头），Slots（槽位），indexes（索引数据）。
+         * indexHeader索引头里面主要是这个indexFile
+         * biginTimestamp(第一条消息存储时间戳)，
+         * endTimestamp（最后一条消息存储时间戳）
+         * biginPhyoffset(第一条消息在commitlog中的偏移量，即commitlog offset)，
+         * endPhyoffset（最后一条消息在commitlog中的偏移量），
+         * hashSlotCount（含有index的slot数量），
+         * indexCount(包含的索引单元的个数)
+         *
+         * slots
+         * 一个indexfile 里面有500W个槽位
+         * 事实上，所有的index统一放在所有的slots后，而不是每个slots后面放该slot挂载的indexes。因为无法确定该slot要挂载的indexes数量并预留空间。
+         * key的hash值 % 500万的结果即为slot槽位，然后将该slot值修改为该index索引单元的indexNo，根据这个indexNo可以计算出该index单元在indexFile中的位置。
+         * 该取模结果的重复率是很高的，为了解决该问题，在每个index索引单元中增加了preIndexNo，用于指定该slot中当前index索引单元的前一个index索引单元。
+         * 每个indexFile包含500万个slot，每个slot有可能会挂载很多index索引单元
+         *
+         * indexs
+         * 存放keyHash（消息中指定业务key的hash值），
+         * phyOffset(当前key对应的commitlog offset)，
+         * timeDiff（当前key对应消息的存储时间与indexFile的时间差），
+         * preIndexNo（当前slot下index索引单元的前一个索引单元的indexNo）
+         *
+         * indexFile创建时间
+         * 当第一条带key的消息发送来后，系统发现没有indexFile，此时会创建第一个indexFile文件
+         * 当一个indexFile中挂载的index索引单元数量超出2000w个时，会创建新的indexFile。当带key的消息发送到来后，
+         * 系统会找到最新的indexFile，并从indexHeader的最后4字节中读取到indexCount。若indexCount >= 2000w时，会创建新的indexFile。
+         *
+         */
+        /**
+         * 如何增加mq 的消费速度
+         *
+         * 1.RabbitMQ 与 RocketMQ/Kafka 的消费方式是不同的， RabbitMQ可以被多个消费者同时消费，
+         * 但是RockeMQ和Kafka每个队列或分区只能被一个消费者消费，所以要提高者两者的消费速度，只能通过增加分区或队列数（rocketMq 同时增加queue的数量和消费者的数量）
+         * 2.三种都提供了批量拉取和批量ACK的功能，都是提高速率不错的方法，但需要考虑消息的丢失问题。
+         * 3.批量拉取消息的时候，消费速度限制在单个消费者身上，这时候可以通过多线程或者协程提高消费速度。
          */
 /*        //同步发送 对结果很关注
         for (int i=0;i<=100;i++){
