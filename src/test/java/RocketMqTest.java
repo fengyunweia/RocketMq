@@ -94,7 +94,22 @@ class RocketMqTest {
 
         /**
          * rocketMq生产环境开启自动创建topic 会有什么影响
-         * rocketMq的读写队列是
+         *
+         * 1：用户指定的读写队列数可能不是预期结果。创建的Topic的读队列数和写队列数取值为默认Topic（“TBW102”）的读队列数和Produce端设置的队列数的最小值
+         *
+         * 2：mq broker启动时，如果开启自动创建topic 则会把默认队列放到topic 配置表里
+         * rocketMq的自动开启创建topic 此时如果生产者发送一条消息 发现nameserver 找不到路由信息
+         * mq会使用默认主题“TBW102”再次发送（把topic为key  消息放到TopicPublishInfo）若
+         * 此时broker 开启了自动创建 则此时自动创建了一个topic （此时刚好到达30S nameserver 拉取路由信息 ）然后把路由信息注册给nameserver
+         * （由于生产者会每隔30s拉取nameserver 的路由缓存到本地 恰好此时正好到30S） / （或者生产者30S内只发送一次 Broker 随着心跳把这个路由信息更新到 NameServer 了）
+         * 其他生产者下次发送就有了此路由的消息，则以后所有的生产者都会发送此topic 的信息到次broker 压力暴增
+         *
+         * 3：（不可以）或者如果此时发送到此broker的某条消息发送失败，则由于故障延迟（Producer如果往某个Broker发送消息失败了，就认为该Broker发生了故障
+         * ，接下来（的30s）该客户端上的所有消息就都不再往该Broker发送了。）此topic 的消息就全部命中失败
+         *
+         * （可以）如果开启自动创建 （nameServer每隔30S监测broker并拉取路由信息阶段）
+         * 此时生产者还一直发送此topic 的信息，则由于负载均衡会有很多个broker有topic的路由信息，达到负载均衡的作用 这种情况可以
+         *
          */
 /*        //同步发送 对结果很关注
         for (int i=0;i<=100;i++){
