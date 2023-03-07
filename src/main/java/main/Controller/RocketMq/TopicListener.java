@@ -1,5 +1,6 @@
+/*
 
-package main.Controller;
+package main.Controller.RocketMq;
 
 import main.domain.Student;
 import org.apache.rocketmq.spring.annotation.ConsumeMode;
@@ -8,9 +9,11 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.stereotype.Component;
 
 
+*/
 /**
  * @author fengyunwei
- */
+ *//*
+
 
 @Component
 @RocketMQMessageListener(consumerGroup = "fengyunwei",topic = "fengyunweiTopic",consumeMode = ConsumeMode.ORDERLY)
@@ -21,3 +24,4 @@ public class TopicListener implements RocketMQListener<String> {
         System.out.println("消费消息:"+s);
     }
 }
+*/

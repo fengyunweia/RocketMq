@@ -1,4 +1,4 @@
-package main.Controller;
+package main.Controller.RocketMq;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.exception.MQClientException;
