@@ -173,6 +173,14 @@ class RocketMqTest {
          * Redis
          * 分布式锁搞起来。
          */
+
+        /**
+         *
+         * 组的作用
+         * 作用是在集群HA的情况下，一个生产者down之后，本地事务回滚后，可以继续联系该组下的另外一个生产者实例，不至于导致业务走不下去。在消费者组中，可以实现消息消费的负载均衡和消息容错目标。
+         *
+         * 另外，有了GroupName，在集群下，动态扩展容量很方便。只需要在新加的机器中，配置相同的GroupName。启动后，就立即能加入到所在的群组中，参与消息生产或消费。
+         */
 /*        //同步发送 对结果很关注
         for (int i=0;i<=100;i++){
             SendResult sendResult = template.syncSend("fengyunweiTopic",String.valueOf(i));
