@@ -8,6 +8,8 @@ public class ChickenHamburgServiceImpl extends Builder{
     private Hamburg hamburg;
     public ChickenHamburgServiceImpl(String bread, String interlayer){
         hamburg = new Hamburg(bread,interlayer);
+//        hamburg.setSauce("番茄酱");
+//        hamburg.setLettuce("有生菜");
     }
 
     @Override

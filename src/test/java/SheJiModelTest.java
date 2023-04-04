@@ -1,4 +1,7 @@
 import main.Application;
+import main.Controller.SheJiModel.FactoryModel.Car;
+import main.Controller.SheJiModel.FactoryModel.WeiLaiCar;
+import main.Controller.SheJiModel.FactoryModel.XiaoMiCar;
 import main.Controller.SheJiModel.JianZaoZhe.BeefHamburgServiceImpl;
 import main.Controller.SheJiModel.JianZaoZhe.ChickenHamburgServiceImpl;
 import main.Controller.SheJiModel.JianZaoZhe.Director;
@@ -21,12 +24,27 @@ public class SheJiModelTest {
         Director director = new Director();
         //各自实现类的构造方法都会给产品填充必填属性
         ChickenHamburgServiceImpl chickenHamburgService = new ChickenHamburgServiceImpl("黄包","鸡排");
-        director.makeHamburg(chickenHamburgService);
+        //director.makeHamburg(chickenHamburgService);
         System.out.println(chickenHamburgService.getHamburg().toString());
 
         BeefHamburgServiceImpl beefHamburgService = new BeefHamburgServiceImpl("红包", "牛排");
         director.makeHamburg(beefHamburgService);
         System.out.println(beefHamburgService.getHamburg().toString());
+    }
+
+    /**
+     * 工厂模式 意图：定义一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。
+     * 例子：您需要一辆汽车，可以直接从工厂里面提货，而不用去管这辆汽车是怎么做出来的，以及这个汽车里面的具体实现。
+     *       Hibernate 换数据库只需换方言和驱动就可以
+     */
+    @Test
+    public void test1(){
+        String carName = "xiaoMi";
+        if(carName.equals("xiaoMi")){
+            new XiaoMiCar().create();
+        }else {
+            new WeiLaiCar().create();
+        }
     }
 
 }
