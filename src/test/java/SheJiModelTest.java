@@ -1,11 +1,14 @@
 import main.Application;
-import main.Controller.SheJiModel.FactoryModel.Car;
 import main.Controller.SheJiModel.FactoryModel.WeiLaiCar;
 import main.Controller.SheJiModel.FactoryModel.XiaoMiCar;
 import main.Controller.SheJiModel.JianZaoZhe.BeefHamburgServiceImpl;
 import main.Controller.SheJiModel.JianZaoZhe.ChickenHamburgServiceImpl;
 import main.Controller.SheJiModel.JianZaoZhe.Director;
 import main.Controller.SheJiModel.Single.SingleClass;
+import main.Controller.SheJiModel.Strategy.Strategy;
+import main.Controller.SheJiModel.observer.CannonFodder;
+import main.Controller.SheJiModel.observer.CannonShooter;
+import main.Controller.SheJiModel.observer.Commander;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -83,10 +86,55 @@ public class SheJiModelTest {
     }
 
     /**
-     * 策略模式
+     * 策略模式 在有多种算法相似的情况下，使用 if...else 所带来的复杂和难以维护。
+     * 应用场景：1、诸葛亮的锦囊妙计，每一个锦囊就是一个策略。 2、旅行的出游方式，选择骑自行车、坐汽车，每一种旅行方式都是一个策略
+     * 。 3、JAVA AWT 中的 LayoutManager。
      */
     @Test
     public void test3() {
+        Strategy.Context context = new Strategy.Context(new Strategy.Add());
+        System.out.println(context.executeStrategy(5, 2));
+    }
+
+    /**
+     * 观察者模式
+     * 当对象间存在一对多关系时，则使用观察者模式（Observer Pattern）。比如，当一个对象被修改时，则会自动通知依赖它的对象。观察者模式属于行为型模式。
+     * 拍卖的时候，拍卖师观察最高标价，然后通知给其他竞价者竞价。
+     *
+     * 根据项目距离 ：比如排期有一个业务 更改了一条明细的价格，就会更改主明细的价格，更改排期的价格
+     * 创建一个被观察者Subject接口，将明细价格类实现这个接口，创建一个hashmap 用来放实现了观察者接口的两个类
+     * （创建一个观察者接口，主明细和排期实现这个接口的update方法，）
+     * 修改某一个明细价格之后 在明细价格类接口里调取通知接口，循环调取hashmap 这两个类的update方法，同步修改金额
+     */
+    @Test
+    public void testObserver(){
+        //指挥官实现被观察接口，被观察
+        Commander cmder = new Commander();
+        //给指挥官设置指令为107
+        cmder.setState(107);
+        //将指令赋值给炮兵
+        CannonShooter cster = new CannonShooter(cmder);
+        //将指令设置给炮兵，并将炮灰设置编号
+        CannonFodder cfder1 = new CannonFodder(cmder,1);
+        CannonFodder cfder2 = new CannonFodder(cmder,2);
+        CannonFodder cfder3 = new CannonFodder(cmder,3);
+
+        //将炮兵和炮灰都注册到指挥官（被观察者）名下
+        cmder.attach(cster);
+        cmder.attach(cfder1);
+        cmder.attach(cfder2);
+        cmder.attach(cfder3);
+
+        //指挥官下令炮兵开炮，炮灰1，2，3倒下
+        cmder.sNotify();
+
+
+        //设置新的命令 移除炮灰三号
+        cmder.setState(108);
+        cmder.detach(cfder3);
+
+        //指挥官下令炮兵开炮，炮灰1，2，倒下
+        cmder.sNotify();
 
     }
 
