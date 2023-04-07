@@ -9,10 +9,17 @@ import main.Controller.SheJiModel.Strategy.Strategy;
 import main.Controller.SheJiModel.observer.CannonFodder;
 import main.Controller.SheJiModel.observer.CannonShooter;
 import main.Controller.SheJiModel.observer.Commander;
+import main.Controller.SheJiModel.proxy.Image;
+import main.Controller.SheJiModel.proxy.ProxyImage;
+import main.Controller.SheJiModel.proxy.dynamicProxy.Animal;
+import main.Controller.SheJiModel.proxy.dynamicProxy.CglibDynamicProxy;
+import main.Controller.SheJiModel.proxy.dynamicProxy.JdkDynamicProxy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.lang.reflect.Proxy;
 
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringRunner.class)
@@ -136,6 +143,51 @@ public class SheJiModelTest {
         //指挥官下令炮兵开炮，炮灰1，2，倒下
         cmder.sNotify();
 
+    }
+
+    /**
+     * 代理模式  1:在直接访问对象时带来的问题，比如说：要访问的对象在远程的机器上。在面向对象系统中，有些对象由于某些原因（比如对象创建开销很大，
+     * 或者某些操作需要安全控制，或者需要进程外的访问），直接访问会给使用者或者系统结构带来很多麻烦，我们可以在访问此对象时加上一个对此对象的访问层。
+     * 2:买火车票不一定在火车站买，也可以去代售点
+     * 3:能够使得在不修改源目标的前提下，额外扩展源目标的功能。即通过访问源目标的代理类，再由代理类去访问源目标。这样一来，要扩展功能，
+     * 就无需修改源目标的代码了。只需要在代理类上增加就可以了
+     */
+    @Test
+    public void proxy(){
+        Image image = new ProxyImage("test_10mb.jpg");
+
+        // 图像将从磁盘加载
+        image.display();
+        System.out.println("");
+        // 图像不需要从磁盘加载
+        image.display();
+    }
+
+    /**
+     * jdk动态代理测试
+     *  * jdk 动态代理需要有接口类即Animal jdk动态代理只能基于接口，代理生成的对象只能赋值给接口变量，而Cglib就不存在这个问题
+     */
+    @Test
+    public void dynamicProxy(){
+        //这里需要穿要被代理的类，因为，执行完代理类的增强代码之后，还要执行原有的方法逻辑，如果不设置会造成死循环即 代类一直代理自己无限代理
+        JdkDynamicProxy proxy = new JdkDynamicProxy(new Animal.Cat("小狸花"));
+        Animal o = (Animal)Proxy.newProxyInstance(proxy.getClass().getClassLoader(), new Class[]{Animal.class}, proxy);
+        o.sleep();
+        o.wakeup();
+    }
+
+    /**
+     * cglib动态代理测试
+     * Cglib是通过生成子类来实现的，代理对象既可以赋值给实现类，又可以赋值给接口。
+     *  * Cglib速度比jdk动态代理更快，性能更好。
+     */
+    @Test
+    public void cglibDynamicProxy(){
+
+        CglibDynamicProxy proxy = new CglibDynamicProxy(new Animal.Cat("张三"));
+        Animal.Cat student = (Animal.Cat) proxy.getProxy();
+        student.wakeup();
+        student.sleep();
     }
 
 }
