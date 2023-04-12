@@ -1,0 +1,15 @@
+server:
+  port: 23897 #web服务端口
+spring:
+  application:
+    name: dubbo-provider # 服务名称
+dubbo:
+  application:
+    name: dubbo-provider #dubbo提供者名称
+  registry:
+    address: zookeeper://192.168.253.128:2181 #注册地址 使用zookeeper
+  scan:
+    base-packages: main #配置扫描路径，这里的扫描路径，要根据自己实际的package来写
+  protocol:
+    name: dubbo #使用dubbo协议
+    port: 20880 #协议端口为20880

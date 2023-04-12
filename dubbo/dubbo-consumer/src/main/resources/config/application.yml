@@ -1,0 +1,15 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: dubbo-consumer
+dubbo:
+  registry:
+    address: zookeeper://192.168.253.128:2181
+  protocol:
+    name: dubbo
+    port: 20880
+  scan:
+    base-packages: main #如果消费者也需要提供服务的话，需要加上扫描包路径，这里的扫描路径，要根据自己实际的package来写
+  application:
+    name: dubbo-consumer
