@@ -19,7 +19,7 @@ import java.util.Arrays;
 @Service
 public class OrderTransactionListener implements TransactionListener  {
     @Override
-    public LocalTransactionState executeLocalTransaction(Message message, Object o) {
+        public LocalTransactionState executeLocalTransaction(Message message, Object o) {
         String body = Arrays.toString(message.getBody());
         //在下面根据具体的逻辑判断做业务操作
 

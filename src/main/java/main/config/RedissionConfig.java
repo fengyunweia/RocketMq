@@ -1,3 +1,4 @@
+/*
 package main.config;
 
 import org.redisson.Redisson;
@@ -8,9 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+*/
 /**
  * @author fengyunwei
- */
+ *//*
+
 @Configuration
 public class RedissionConfig {
     @Value("${spring.redis.host}")
@@ -30,4 +33,4 @@ public class RedissionConfig {
         config.setCodec(new JsonJacksonCodec());
         return Redisson.create(config);
     }
-}
+}*/

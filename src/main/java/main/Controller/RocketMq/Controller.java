@@ -1,3 +1,4 @@
+/*
 package main.Controller.RocketMq;
 
 import com.alibaba.fastjson.JSON;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
+*/
 /**
  * @author fengyunwei
- */
+ *//*
+
 @RestController
 @RequestMapping("/test")
 public class Controller {
@@ -75,3 +78,4 @@ public class Controller {
     }
 
 }
+*/
