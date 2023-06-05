@@ -4,7 +4,7 @@ public class testMain {
     public static void main(String[] args) {
 
     }
-    public void test(String a ,String b,String c){
+    public void test(String a ,String b,String c,String d){
 
     }
 }
